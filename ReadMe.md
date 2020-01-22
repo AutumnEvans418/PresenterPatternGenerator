@@ -103,3 +103,12 @@ public class Form1Presenter
 ## Why would I use this?
 
 This is mainly used to convert old projects into code that can be easily tested.  The goal would be to event make this an easy refactoring style change that would allow developers to create a presenter class that they can test the logic of their form with.
+
+## Feature List
+- [x] Convert fields to properties
+- [x] Convert methods to presenter methods
+- [ ] Copy the contents of the methods and have them reference the new properties
+- [ ] Check what properties of each field is used and generate those.
+## Resources
+
+https://stackoverflow.com/questions/13679240/parsing-function-method-content-using-reflection
