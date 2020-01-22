@@ -14,17 +14,34 @@ namespace PaintScan.Tests
         }
 
 
-        private static void CreateInterfaceProperty( PropertyInfo propertyInfo, string type, IInterface inInterface)
+        //private static void CreateInterfaceProperty( PropertyInfo propertyInfo, string type, IInterface inInterface)
+        //{
+        //    inInterface.AddProperty(propertyInfo.Name + "Property", type);
+        //    //strInterface.AppendLine($"{type} {propertyInfo.Name}Property" + " { get; set; }");
+        //}
+
+        public static string CreatePresenterPattern<T>(IProgramLanguage language) where T : Form
         {
-            inInterface.AddProperty(propertyInfo.Name + "Property", type);
-            //strInterface.AppendLine($"{type} {propertyInfo.Name}Property" + " { get; set; }");
+            return CreatePresenterPattern(typeof(T), language);
         }
+
 
         public static string CreatePresenterPattern(Type type, IProgramLanguage language)
         {
+            var fields = type
+                .GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Where(p => p.FieldType.IsSubclassOf(typeof(Control)))
+                .Select(p => new { Type = p.FieldType, Name = p.Name });
+
+
+
             var result = type
                 .GetProperties(BindingFlags.Instance | BindingFlags.NonPublic)
-                .Where(p => p.PropertyType.IsSubclassOf(typeof(Control)));
+                .Where(p => p.PropertyType.IsSubclassOf(typeof(Control)))
+                .Select(p => new { Type = p.PropertyType, Name = p.Name })
+                .Union(fields);
+
+
             //var strInterface = new StringBuilder();
             var inter = language.CreateInterface("I" + type.Name);
             var strForm = language.CreateClass(type.Name);
@@ -41,12 +58,12 @@ namespace PaintScan.Tests
             {
                 bool T(Type t)
                 {
-                    return propertyInfo.PropertyType == t;
+                    return propertyInfo.Type == t;
                 }
 
                 void CreateInt(string strType)
                 {
-                    CreateInterfaceProperty( propertyInfo, strType, inter);
+                    inter.AddProperty(propertyInfo.Name + "Property", strType);
                 }
 
                 void Create(string strType, string clsType)
@@ -90,13 +107,13 @@ namespace PaintScan.Tests
                 {
                     Create("string", "Source");
                 }
-                else if (T(typeof(ComboBox)))
+                else if (T(typeof(ComboBox)) || T(typeof(ListBox)))
                 {
                     Create("ObservableCollection<object>", "DataSource");
                     inter.AddProperty($"Selected{propertyInfo.Name}Property", "object");
                     //strInterface.AppendLine($"object Selected{propertyInfo.Name}Property" + " { get; set; }");
                 }
-                else if (propertyInfo.PropertyType.IsSubclassOf(typeof(Panel)) || T(typeof(Panel)))
+                else if (propertyInfo.Type.IsSubclassOf(typeof(Panel)) || T(typeof(Panel)))
                 {
 
                 }
@@ -116,9 +133,9 @@ namespace PaintScan.Tests
                 {
 
                 }
-                else if (typeof(TextBox).Assembly == propertyInfo.PropertyType.Assembly)
+                else if (typeof(TextBox).Assembly == propertyInfo.Type.Assembly)
                 {
-                    throw new NotImplementedException($"{propertyInfo.PropertyType} has not been implemented");
+                    throw new NotImplementedException($"{propertyInfo.Type} has not been implemented");
                 }
             }
 

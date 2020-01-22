@@ -38,5 +38,14 @@ namespace PaintScan.Tests
             var props = FormPresenterPatternCreator.CreatePresenterPattern(typeof(Form1), new CSharpLanguage());
             Console.WriteLine(props);
         }
+
+        [Test]
+        public void Form1_Should_Generate3Classes()
+        {
+            var result = FormPresenterPatternCreator.CreatePresenterPattern<Form1>(new VbLanguage());
+
+            
+        }
+
     }
 }
