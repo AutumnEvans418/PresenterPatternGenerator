@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WindowsFormsTests\WindowsFormsTests.csproj" />
     <ProjectReference Include="..\PresenterPatternGenerator\PresenterPatternGenerator.csproj" />
+    <ProjectReference Include="..\WindowsFormsTests\WindowsFormsTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
